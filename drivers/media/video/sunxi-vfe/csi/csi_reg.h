@@ -260,8 +260,8 @@ void csi_disable(unsigned int sel);
 void csi_if_cfg(unsigned int sel, struct csi_if_cfg *csi_if_cfg);
 void csi_timing_cfg(unsigned int sel, struct csi_timing_cfg *csi_tmg_cfg);
 void csi_fmt_cfg(unsigned int sel, unsigned int ch, struct csi_fmt_cfg *csi_fmt_cfg);
-void inline csi_set_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf, u64 addr);
-u64 inline csi_get_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf);
+void csi_set_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf, u64 addr);
+u64  csi_get_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf);
 void csi_capture_start(unsigned int sel, unsigned int ch_total_num, enum csi_cap_mode csi_cap_mode);
 void csi_capture_stop(unsigned int sel, unsigned int ch_total_num, enum csi_cap_mode csi_cap_mode);
 void csi_capture_get_status(unsigned int sel, unsigned int ch, struct csi_capture_status *status);
@@ -269,8 +269,8 @@ void csi_set_size(unsigned int sel, unsigned int ch, unsigned int length_h, unsi
 void csi_set_offset(unsigned int sel, unsigned int ch, unsigned int start_h, unsigned int start_v);
 void csi_int_enable(unsigned int sel, unsigned int ch, enum csi_int_sel interrupt);
 void csi_int_disable(unsigned int sel, unsigned int ch, enum csi_int_sel interrupt);
-void inline csi_int_get_status(unsigned int sel, unsigned int ch,struct csi_int_status *status);
-void inline csi_int_clear_status(unsigned int sel, unsigned int ch, enum csi_int_sel interrupt);
+void csi_int_get_status(unsigned int sel, unsigned int ch,struct csi_int_status *status);
+void csi_int_clear_status(unsigned int sel, unsigned int ch, enum csi_int_sel interrupt);
 
 
 #endif

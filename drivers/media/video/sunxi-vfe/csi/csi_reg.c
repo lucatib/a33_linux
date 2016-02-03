@@ -126,12 +126,12 @@ void csi_fmt_cfg(unsigned int sel, unsigned int ch, struct csi_fmt_cfg *csi_fmt_
 }
 
 /* buffer */
-void inline csi_set_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf, u64 addr)
+void csi_set_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf, u64 addr)
 {
 	(csi_ch_f0_bufa_reg[sel] + ch*CSI_CH_OFF + buf)->dwval = addr >> ADDR_BIT_R_SHIFT;
 }
 
-u64 inline csi_get_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf)
+u64 csi_get_buffer_address(unsigned int sel, unsigned int ch, enum csi_buf_sel buf)
 {
   return ((csi_ch_f0_bufa_reg[sel] + ch*CSI_CH_OFF + (buf<<2))->dwval) << ADDR_BIT_R_SHIFT;
 }
@@ -187,7 +187,7 @@ void csi_int_disable(unsigned int sel, unsigned int ch, enum csi_int_sel interru
   (csi_ch_int_en_reg[sel] + ch*CSI_CH_OFF)->dwval &= ~interrupt;
 }
 
-void inline csi_int_get_status(unsigned int sel, unsigned int ch,struct csi_int_status *status)
+void csi_int_get_status(unsigned int sel, unsigned int ch,struct csi_int_status *status)
 {
   status->capture_done     = (csi_ch_int_sta_reg[sel] + ch*CSI_CH_OFF)->bits.cd_pd;
   status->frame_done       = (csi_ch_int_sta_reg[sel] + ch*CSI_CH_OFF)->bits.fd_pd;
@@ -199,7 +199,7 @@ void inline csi_int_get_status(unsigned int sel, unsigned int ch,struct csi_int_
   status->vsync_trig       = (csi_ch_int_sta_reg[sel] + ch*CSI_CH_OFF)->bits.vs_pd;
 }
 
-void inline csi_int_clear_status(unsigned int sel, unsigned int ch, enum csi_int_sel interrupt)
+void csi_int_clear_status(unsigned int sel, unsigned int ch, enum csi_int_sel interrupt)
 {
   (csi_ch_int_sta_reg[sel] + ch*CSI_CH_OFF)->dwval = interrupt;
 }
