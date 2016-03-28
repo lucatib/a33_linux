@@ -600,8 +600,11 @@ static void sunxi_hcd_board_set_vbus(struct sunxi_hcd *sunxi_hcd, int is_on)
 
 	/* set gpio data */
 	if (sunxi_hcd->sunxi_hcd_io->drv_vbus_valid) {
+#if 0
 		__gpio_set_value(sunxi_hcd->sunxi_hcd_io->drv_vbus_gpio_set.gpio.gpio, on_off);
+#endif
 	}
+
 #endif
 
 	if (is_on) {
@@ -1434,7 +1437,7 @@ fail:
 
 int sunxi_usb_host0_enable(void)
 {
-#if CONFIG_USB_SUNXI_USB0_OTG
+#ifdef CONFIG_USB_SUNXI_USB0_OTG
 	struct platform_device 	*pdev 	= NULL;
 	struct device   	*dev  	= NULL;
 	struct sunxi_hcd 	*sunxi_hcd = NULL;
@@ -1517,7 +1520,7 @@ static void sunxi_hcd_wait_for_disconnect(struct sunxi_hcd *sunxi_hcd)
 
 int sunxi_usb_host0_disable(void)
 {
-#if CONFIG_USB_SUNXI_USB0_OTG
+#ifdef CONFIG_USB_SUNXI_USB0_OTG
 	struct platform_device 	*pdev 	= NULL;
 	struct sunxi_hcd 	*sunxi_hcd = NULL;
 	unsigned long   	flags 	= 0;

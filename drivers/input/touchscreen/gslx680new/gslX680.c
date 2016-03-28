@@ -33,7 +33,7 @@
 
 #include <linux/input/mt.h>
 
-#include <linux/i2c.h>
+//#include <linux/i2c.h>
 #include <linux/input.h>
 
 #include <linux/delay.h>
@@ -67,6 +67,7 @@ struct gslX680_fw_array {
 	unsigned int size;
 	const struct fw_data *fw;
 } gslx680_fw_grp[] = {
+	{"default_ctp"  ,  ARRAY_SIZE(GSL1680E_FW_P2),GSL1680E_FW_P2},
 	{"gslX680_inetd71"  ,  ARRAY_SIZE(GSLX680_FW_INETD71),GSLX680_FW_INETD71},
 	{"gsl1680e_p2"  ,  ARRAY_SIZE(GSL1680E_FW_P2),GSL1680E_FW_P2},
 };
@@ -97,7 +98,7 @@ static u8 gsl_proc_flag = 0;
 #define GSL_PAGE_REG		0xf0
 
 #define PRESS_MAX    			255
-#define MAX_FINGERS 		5//5 //×î´óÊÖÖ¸¸öÊý
+#define MAX_FINGERS 		5//5 //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define MAX_CONTACTS 		10
 #define DMA_TRANS_LEN		0x20
 
@@ -252,7 +253,7 @@ struct ctp_config_info config_info = {
 
 static __u32 twi_id = 0;
 
-static u32 debug_mask = 0;
+static u32 debug_mask = 1;
 enum{
 	DEBUG_INIT = 1U << 0,
 	DEBUG_SUSPEND = 1U << 1,
@@ -284,7 +285,7 @@ int ctp_i2c_write_bytes(struct i2c_client *client, uint8_t *data, uint16_t len)
 {
 	struct i2c_msg msg;
 	int ret=-1;
-	
+
 	msg.flags = !I2C_M_RD;
 	msg.addr = client->addr;
 	msg.len = len;
@@ -320,7 +321,8 @@ static int ctp_detect(struct i2c_client *client, struct i2c_board_info *info)
     
 	if(twi_id == adapter->nr){
     	pr_info("%s: addr= %x\n",__func__,client->addr);
-        ret = ctp_i2c_test(client);
+
+    	ret = ctp_i2c_test(client);
         if(!ret){
         	pr_info("%s:I2C connection might be something wrong \n",__func__);
         	return -ENODEV;
@@ -654,8 +656,8 @@ static void check_mem_data(struct i2c_client *client)
 
 	//if(gsl_chipType_new == 1)	
 	{
-	         if(ts_init->is_suspended != false)
-                         msleep(30);
+	    if(ts_init->is_suspended != false)
+	    	msleep(30);
 		gsl_ts_read(client,0xb0, read_buf, sizeof(read_buf));
 		printk("#########check mem read 0xb0 = %x %x %x %x #########\n", read_buf[3], read_buf[2], read_buf[1], read_buf[0]);
 	
@@ -1715,7 +1717,6 @@ static int ctp_get_system_config(void)
 }
 static int __init gsl_ts_init(void)
 {
-
 	int ret = -1;
 	dprintk(DEBUG_INIT,"****************************************************************\n");
 	if (input_fetch_sysconfig_para(&(config_info.input_type))) {
@@ -1739,6 +1740,7 @@ static int __init gsl_ts_init(void)
 	ctp_wakeup(1,0);
 
 	ret = i2c_add_driver(&gsl_ts_driver);
+
 	printk("****************************************************************\n");
 	return ret;
 }

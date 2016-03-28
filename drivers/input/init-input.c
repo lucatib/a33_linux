@@ -61,7 +61,15 @@ static int ctp_fetch_sysconfig_para(enum input_sensor_type *ctp_type)
 	type = script_get_item("ctp_para", "ctp_name", &val);
 	if (SCIRPT_ITEM_VALUE_TYPE_STR!= type) {
 		pr_err("%s: ctp_name script_get_item err. \n",__func__ );
+#if 0
 		goto script_get_item_err;
+#else
+		{
+			static char default_ctp[]={"default_ctp"};
+			val.str= default_ctp;
+			pr_err("%s: using default ctp name default_ctp\n",__func__ );
+		}
+#endif
 	}
 	data->name= val.str;
 

@@ -87,7 +87,7 @@ static u32 gslX680_debug_mask = 1;
 #define GSL_PAGE_REG		0xf0
 
 #define PRESS_MAX    			255
-#define MAX_FINGERS 		5//5 //�����ָ����
+#define MAX_FINGERS 		5//5 //�����������������������������
 #define MAX_CONTACTS 		10
 #define DMA_TRANS_LEN		0x20
 

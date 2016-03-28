@@ -1071,6 +1071,11 @@ static void __exit sw_device_exit(void)
 }
 /*************************************************************************************/
 
+int tp_light_ctrl(unsigned long dummy){
+	return 0;
+}
+EXPORT_SYMBOL(tp_light_ctrl);
+
 MODULE_AUTHOR("Ida yin");
 MODULE_DESCRIPTION("Detection i2c device driver");
 MODULE_LICENSE("GPL");
