@@ -350,8 +350,8 @@ clean)
 *)
 	build_kernel
 	build_modules
-	build_ramfs
-	gen_output
+	#build_ramfs
+	#gen_output
 	;;
 esac
 

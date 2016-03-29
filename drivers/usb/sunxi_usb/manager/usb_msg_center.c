@@ -122,6 +122,12 @@ static void insmod_host_driver(struct usb_msg_center_info *center_info)
 
 	sunxi_usb_host0_enable();
 
+#if 1
+	DMSG_INFO("FORCED USB Charge\n\n");
+	axp_usbcur(CHARGE_USB_20);
+	axp_usbvol(CHARGE_USB_20);
+#endif
+
 	return;
 }
 
@@ -146,10 +152,12 @@ static void insmod_device_driver(struct usb_msg_center_info *center_info)
 {
 	DMSG_INFO("\n\ninsmod_device_driver\n\n");
 
+#ifndef CONFIG_USB_SUNXI_USB0_HOST_ONLY
 	set_usb_role(center_info, USB_ROLE_DEVICE);
-
 	sunxi_usb_device_enable();
-
+#else
+	set_usb_role(center_info, USB_ROLE_NULL);
+#endif
 	return;
 }
 
@@ -158,12 +166,17 @@ static void rmmod_device_driver(struct usb_msg_center_info *center_info)
 	DMSG_INFO("\n\nrmmod_device_driver\n\n");
 
 	set_usb_role(center_info, USB_ROLE_NULL);
-
+#ifndef CONFIG_USB_SUNXI_USB0_HOST_ONLY
 	sunxi_usb_device_disable();
+#endif
 
 #if defined(CONFIG_AW_AXP)
+
+#if 0	//No ac is available in tablet Majestic.....
 	axp_usbcur(CHARGE_AC);
 	axp_usbvol(CHARGE_AC);
+#endif
+
 #endif
 	return;
 }

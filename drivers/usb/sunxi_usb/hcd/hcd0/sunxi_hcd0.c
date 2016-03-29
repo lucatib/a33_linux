@@ -1593,6 +1593,7 @@ EXPORT_SYMBOL(sunxi_usb_host0_disable);
  */
 static int sunxi_hcd_probe_otg(struct platform_device *pdev)
 {
+#ifdef CONFIG_USB_SUNXI_USB0_OTG
 	struct device   *dev    = &pdev->dev;
 	int             irq     = SUNXI_IRQ_USBOTG; //platform_get_irq(pdev, 0);
 	__s32 		ret 	= 0;
@@ -1634,10 +1635,14 @@ static int sunxi_hcd_probe_otg(struct platform_device *pdev)
 
 end:
 	return status;
+#else
+	return 0;
+#endif
 }
 
 static int sunxi_hcd_remove_otg(struct platform_device *pdev)
 {
+#ifdef CONFIG_USB_SUNXI_USB0_OTG
 	struct sunxi_hcd *sunxi_hcd = dev_to_sunxi_hcd(&pdev->dev);
 
 	sunxi_hcd_shutdown(pdev);
@@ -1657,7 +1662,7 @@ static int sunxi_hcd_remove_otg(struct platform_device *pdev)
 	sunxi_hcd_io_exit(usbc_no, pdev, &g_sunxi_hcd_io);
 	g_hcd0_pdev = NULL;
 	usbc_no = 0;
-
+#endif
 	return 0;
 }
 
