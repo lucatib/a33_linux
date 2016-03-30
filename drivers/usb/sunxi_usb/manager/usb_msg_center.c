@@ -124,8 +124,8 @@ static void insmod_host_driver(struct usb_msg_center_info *center_info)
 
 #if 1
 	DMSG_INFO("FORCED USB Charge\n\n");
-	axp_usbcur(CHARGE_USB_20);
-	axp_usbvol(CHARGE_USB_20);
+	axp_usbcur(CHARGE_USB_30);
+	axp_usbvol(CHARGE_USB_30);
 #endif
 
 	return;
