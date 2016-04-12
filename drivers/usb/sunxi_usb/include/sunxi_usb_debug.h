@@ -63,7 +63,7 @@
 #endif
 
 /* normal print */
-#if  1
+#if  0
 #define DMSG_INFO         		DMSG_PRINT
 #else
 #define DMSG_INFO(...)
