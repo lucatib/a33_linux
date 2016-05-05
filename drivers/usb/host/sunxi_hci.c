@@ -503,90 +503,91 @@ static s32 get_usb_cfg(struct sunxi_hci_hcd *sunxi_hci)
 	return 0;
 }
 
-#ifndef CONFIG_ARCH_SUN9IW1
-static __u32 USBC_Phy_GetCsr(__u32 usbc_no)
-{
-	__u32 val = 0x0;
-
-	switch(usbc_no){
-	case 0:
-		val = (u32 __force)SUNXI_USB_OTG_VBASE + USBPHYC_REG_o_PHYCTL;
-		break;
-	case 1:
-		val = (u32 __force)SUNXI_USB_OTG_VBASE + USBPHYC_REG_o_PHYCTL;
-		break;
-	case 2:
-		val = (u32 __force)SUNXI_USB_OTG_VBASE + USBPHYC_REG_o_PHYCTL;
-		break;
-	default:
-		break;
-	}
-
-	return val;
-}
-static __u32 USBC_Phy_TpWrite(__u32 usbc_no, __u32 addr, __u32 data, __u32 len)
-{
-	__u32 temp = 0, dtmp = 0;
-	__u32 j=0;
-
-	dtmp = data;
-	for(j = 0; j < len; j++)
+	#ifndef CONFIG_ARCH_SUN9IW1
+	static __u32 USBC_Phy_GetCsr(__u32 usbc_no)
 	{
-		/* set  the bit address to be write */
-		temp = USBC_Readl(USBC_Phy_GetCsr(usbc_no));
-		temp &= ~(0xff << 8);
-		temp |= ((addr + j) << 8);
-		USBC_Writel(temp, USBC_Phy_GetCsr(usbc_no));
+		__u32 val = 0x0;
 
-		temp = USBC_Readb(USBC_Phy_GetCsr(usbc_no));
-		temp &= ~(0x1 << 7);
-		temp |= (dtmp & 0x1) << 7;
-		temp &= ~(0x1 << (usbc_no << 1));
-		USBC_Writeb(temp, USBC_Phy_GetCsr(usbc_no));
+		switch(usbc_no){
+		case 0:
+			val = (u32 __force)SUNXI_USB_OTG_VBASE + USBPHYC_REG_o_PHYCTL;
+			break;
+		case 1:
+			val = (u32 __force)SUNXI_USB_OTG_VBASE + USBPHYC_REG_o_PHYCTL;
+			break;
+		case 2:
+			val = (u32 __force)SUNXI_USB_OTG_VBASE + USBPHYC_REG_o_PHYCTL;
+			break;
+		default:
+			break;
+		}
 
-		temp = USBC_Readb(USBC_Phy_GetCsr(usbc_no));
-		temp |= (0x1 << (usbc_no << 1));
-		USBC_Writeb( temp, USBC_Phy_GetCsr(usbc_no));
+		return val;
+	}
+	static __u32 USBC_Phy_TpWrite(__u32 usbc_no, __u32 addr, __u32 data, __u32 len)
+	{
+		__u32 temp = 0, dtmp = 0;
+		__u32 j=0;
 
-		temp = USBC_Readb(USBC_Phy_GetCsr(usbc_no));
-		temp &= ~(0x1 << (usbc_no <<1 ));
-		USBC_Writeb(temp, USBC_Phy_GetCsr(usbc_no));
-		dtmp >>= 1;
+		dtmp = data;
+		for(j = 0; j < len; j++)
+		{
+			/* set  the bit address to be write */
+			temp = USBC_Readl(USBC_Phy_GetCsr(usbc_no));
+			temp &= ~(0xff << 8);
+			temp |= ((addr + j) << 8);
+			USBC_Writel(temp, USBC_Phy_GetCsr(usbc_no));
+
+			temp = USBC_Readb(USBC_Phy_GetCsr(usbc_no));
+			temp &= ~(0x1 << 7);
+			temp |= (dtmp & 0x1) << 7;
+			temp &= ~(0x1 << (usbc_no << 1));
+			USBC_Writeb(temp, USBC_Phy_GetCsr(usbc_no));
+
+			temp = USBC_Readb(USBC_Phy_GetCsr(usbc_no));
+			temp |= (0x1 << (usbc_no << 1));
+			USBC_Writeb( temp, USBC_Phy_GetCsr(usbc_no));
+
+			temp = USBC_Readb(USBC_Phy_GetCsr(usbc_no));
+			temp &= ~(0x1 << (usbc_no <<1 ));
+			USBC_Writeb(temp, USBC_Phy_GetCsr(usbc_no));
+			dtmp >>= 1;
+		}
+
+		return data;
 	}
 
-	return data;
-}
-
-static __u32 USBC_Phy_Write(__u32 usbc_no, __u32 addr, __u32 data, __u32 len)
-{
-	return USBC_Phy_TpWrite(usbc_no, addr, data, len);
-}
-
-static void UsbPhyInit(__u32 usbc_no)
-{
-//	DMSG_INFO("csr1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
-
-	/* adjust the 45 ohm resistance */
-	if(usbc_no == 0){
-		USBC_Phy_Write(usbc_no, 0x0c, 0x01, 1);
+	static __u32 USBC_Phy_Write(__u32 usbc_no, __u32 addr, __u32 data, __u32 len)
+	{
+		return USBC_Phy_TpWrite(usbc_no, addr, data, len);
 	}
 
-//	DMSG_INFO("csr2-0: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x0c, 1));
+	static void UsbPhyInit(__u32 usbc_no)
+	{
+		DMSG_INFO("csr1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
 
-	/* adjust USB0 PHY's rate and range */
-	USBC_Phy_Write(usbc_no, 0x20, 0x14, 5);
+		/* adjust the 45 ohm resistance */
+		if(usbc_no == 0){
+			USBC_Phy_Write(usbc_no, 0x0c, 0x01, 1);
+		}
 
-//	DMSG_INFO("csr2-1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x20, 5));
+	//	DMSG_INFO("csr2-0: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x0c, 1));
 
-	/* adjust disconnect threshold value */
-	USBC_Phy_Write(usbc_no, 0x2a, 3, 2); /*by wangjx*/
+		//TX rate
+		USBC_Phy_Write(usbc_no, 0x20, 0x14, 5);
 
-//	DMSG_INFO("csr2: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x2a, 2));
-//	DMSG_INFO("csr3: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
+	//	DMSG_INFO("csr2-1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x20, 5));
 
-	return;
-}
-#endif
+		/* adjust disconnect threshold value */
+		USBC_Phy_Write(usbc_no, 0x2a, 3, 2); /*by wangjx*/
+
+	//	DMSG_INFO("csr2: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x2a, 2));
+	//	DMSG_INFO("csr3: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
+
+		return;
+	}
+	#endif
+
 
 #ifndef  SUNXI_USB_FPGA
 static s32 clock_init(struct sunxi_hci_hcd *sunxi_hci, u32 ohci)

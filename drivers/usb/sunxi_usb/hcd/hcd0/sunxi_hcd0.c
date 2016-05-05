@@ -179,9 +179,9 @@ static ssize_t ed_test(struct device *dev, struct device_attribute *attr,
 		const char *buf, size_t count)
 {
 	u32 fifo = 0;
-	struct platform_device 	*pdev 	= NULL;
+	struct platform_device 		*pdev 	= NULL;
 	struct sunxi_hcd 			*sunxi_hcd	= NULL;
-	pdev = to_platform_device(dev);;
+	pdev = to_platform_device(dev);
 	if(pdev == NULL){
 		DMSG_PANIC("ERR: pdev is null\n");
 		return -1;

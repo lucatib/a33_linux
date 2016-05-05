@@ -21,7 +21,7 @@
  */
 
 //Common Control Bits for Both PHYs
-#define  USBC_PHY_PLL_BW			0x03
+#define  USBC_PHY_PLL_BW				0x03
 #define  USBC_PHY_RES45_CAL_EN			0x0c
 
 //Private Control Bits for Each PHY
@@ -94,7 +94,7 @@ static void __USBC_PHY_SET_PLL_BW(__u32 val)
 */
 
 /*
- * Enable/Disable USB res45 Calibration, val = 0--Disable；1--Enable, default = 0
+ * Enable/Disable USB res45 Calibration, val = 0--Disable���1--Enable, default = 0
  */
 static void __USBC_PHY_RES45_CALIBRATION_ENABLE(__u32 val)
 {
@@ -132,7 +132,7 @@ static void __USBC_PHY_SET_VBUS_VALID_THRESHOLD(__u32 usbc_base_addr, __u32 val)
 */
 
 /*
- * Enable/Diasble USB OTG Function, val = 0--Disable；1--Enable, default = 1
+ * Enable/Diasble USB OTG Function, val = 0--Disable���1--Enable, default = 1
  */
 /*
 static void __USBC_PHY_OTG_FUNC_ENABLE(__u32 usbc_base_addr, __u32 val)
@@ -142,7 +142,7 @@ static void __USBC_PHY_OTG_FUNC_ENABLE(__u32 usbc_base_addr, __u32 val)
 */
 
 /*
- * Enable/Diasble USB VBUS Detect Function, val = 0--Disable；1--Enable, default = 1
+ * Enable/Diasble USB VBUS Detect Function, val = 0--Disable���1--Enable, default = 1
  */
 /*
 static void __USBC_PHY_VBUS_DET_ENABLE(__u32 usbc_base_addr, __u32 val)
@@ -364,28 +364,26 @@ static __u32 USBC_Phy_Write(__u32 usbc_no, __u32 addr, __u32 data, __u32 len)
 	return USBC_Phy_TpWrite(usbc_no, addr, data, len);
 }
 
+
 void UsbPhyInit(__u32 usbc_no)
 {
-	//DMSG_INFO("csr1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
+	DMSG_INFO("csr1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
 
 	/* adjust the 45 ohm resistor */
-	if (usbc_no == 0) {
-		USBC_Phy_Write(usbc_no, 0x0c, 0x01, 1);
-	}
+	//if (usbc_no == 0) {
+	USBC_Phy_Write(usbc_no, USBC_PHY_RES45_CAL_EN, 0x01, 1);		//1=enable
+	USBC_Phy_Write(usbc_no, USBC_PHY_PLL_BW, 0x03, 2);				//0x00 - 0x03
+	//}
+	/* adjust USB0 PHY TX range and rate */
+	USBC_Phy_Write(usbc_no, USBC_PHY_TX_AMPLITUDE_TUNE, 0x03, 2);	//	0x0 ~ 0x3
+	USBC_Phy_Write(usbc_no, USBC_PHY_TX_SLEWRATE_TUNE, 0x07, 3);	//0x0 ~ 0x7
 
-	//DMSG_INFO("csr2-0: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x0c, 1));
-
-	/* adjust USB0 PHY range and rate */
-	USBC_Phy_Write(usbc_no, 0x20, 0x14, 5);
-
-	//DMSG_INFO("csr2-1: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x20, 5));
+	USBC_Phy_Write(usbc_no, USBC_PHY_VBUS_DET_EN, 0x01, 1);			//1=enable
 
 	/* adjust disconnect threshold */
-	USBC_Phy_Write(usbc_no, 0x2a, 3, 2);
+	USBC_Phy_Write(usbc_no, USBC_PHY_DISCON_TH_SEL , 0x03, 2);		//0x0 ~ 0x3
 	/*by wangjx*/
 
-	//DMSG_INFO("csr2: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Phy_Read(usbc_no, 0x2a, 2));
-	//DMSG_INFO("csr3: usbc%d: 0x%x\n", usbc_no, (u32)USBC_Readl(USBC_Phy_GetCsr(usbc_no)));
 	return;
 }
 
